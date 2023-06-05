@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    .calculator {
+      max-width: 300px;
+      margin: 0 auto;
+      margin-top: 50px;
+    }
+    .calculator .display {
+      height: 50px;
+      background-color: #f8f9fa;
+      text-align: right;
+      padding: 10px;
+      font-size: 20px;
+    }
+    .calculator .btn {
+      font-size: 20px;
+      width: 75px;
+      height: 75px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <button class="btn btn-secondary" id="clear">AC</button>
+    <button class="btn btn-secondary" id="divide">/</button>
+    <button class="btn btn-secondary" id="multiply">*</button>
+    <button class="btn btn-secondary" id="seven">7</button>
+    <button class="btn btn-secondary" id="eight">8</button>
+    <button class="btn btn-secondary" id="nine">9</button>
+    <button class="btn btn-secondary" id="subtract">-</button>
+    <button class="btn btn-secondary" id="four">4</button>
+    <button class="btn btn-secondary" id="five">5</button>
+    <button class="btn btn-secondary" id="six">6</button>
+    <button class="btn btn-secondary" id="add">+</button>
+    <button class="btn btn-secondary" id="one">1</button>
+    <button class="btn btn-secondary" id="two">2</button>
+    <button class="btn btn-secondary" id="three">3</button>
+    <button class="btn btn-secondary" id="equals">=</button>
+    <button class="btn btn-secondary" id="zero">0</button>
+    <button class="btn btn-secondary" id="decimal">.</button>
+  </div>
+
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const display = document.getElementById('display');
+      const clearBtn = document.getElementById('clear');
+      const equalsBtn = document.getElementById('equals');
+      const operators = document.querySelectorAll('.btn[id^="add"], .btn[id^="subtract"], .btn[id^="multiply"], .btn[id^="divide"]');
+      const numbers = document.querySelectorAll('.btn[id^="zero"], .btn[id^="one"], .btn[id^="two"], .btn[id^="three"], .btn[id^="four"], .btn[id^="five"], .btn[id^="six"], .btn[id^="seven"], .btn[id^="eight"], .btn[id^="nine"]');
+      const decimalBtn = document.getElementById('decimal');
+
+      let currentOperand = '';
+      let previousOperand = '';
+      let operation = '';
+
+      // Functions for calculator operations
+      function add(a, b) {
+        return a + b;
+      }
+
+      function subtract(a, b) {
+        return a - b;
+      }
+
+      function multiply(a, b) {
+        return a * b;
+      }
+
+      function divide(a, b) {
+        return a / b;
+      }
+
+      function operate(operator, a, b) {
+        a = parseFloat(a);
+        b = parseFloat(b);
+        switch (operator) {
+          case '+':
+            return add(a, b);
+          case '-':
+            return subtract(a, b);
+          case '*':
+            return multiply(a, b);
+          case '/':
+            return divide(a, b);
+          default:
+            return null;
+        }
+      }
+
+      // Update the display
+      function updateDisplay() {
+        display.textContent = currentOperand;
+      }
+
+      // Clear the calculator
+      function clear() {
+        currentOperand = '';
+        previousOperand = '';
+        operation = '';
+        updateDisplay();
+      }
+
+      // Handle number button clicks
+      numbers.forEach(function(number) {
+        number.addEventListener('click', function() {
+          if (number.id === 'zero' && currentOperand === '0') return;
+          if (currentOperand.length >= 15) return; // Limit the display to 15 characters
+          currentOperand += number.textContent;
+          updateDisplay();
+        });
+      });
+
+      // Handle operator button clicks
+      operators.forEach(function(operator) {
+        operator.addEventListener('click', function() {
+          if (previousOperand && currentOperand) {
+            currentOperand = operate(operation, previousOperand, currentOperand).toString();
+            previousOperand = '';
+          }
+          operation = operator.textContent;
+          previousOperand = currentOperand;
+          currentOperand = '';
+          updateDisplay();
+        });
+      });
+
+      // Handle equals button click
+      equalsBtn.addEventListener('click', function() {
+        if (previousOperand && currentOperand && operation) {
+          currentOperand = operate(operation, previousOperand, currentOperand).toString();
+          previousOperand = '';
+          operation = '';
+          updateDisplay();
+        }
+      });
+
+      // Handle decimal button click
+      decimalBtn.addEventListener('click', function() {
+        if (!currentOperand.includes('.')) {
+          currentOperand += '.';
+          updateDisplay();
+        }
+      });
+
+      // Handle clear button click
+      clearBtn.addEventListener('click', clear);
+    });
+  </script>
+</body>
+</html>
+
